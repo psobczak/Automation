@@ -6,7 +6,7 @@ import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.sobczak.automation.annotations.PageObject;
-import pl.sobczak.automation.models.Card;
+import pl.sobczak.automation.models.HomePageCard;
 import pl.sobczak.automation.pages.elements.TopMenu;
 
 import java.util.List;
@@ -29,6 +29,9 @@ public class HomePage extends BasePage {
     @FindBy(css = "div#onetrust-button-group-parent")
     private WebElement consentContainer;
 
+    @FindBy(css = "body#index")
+    private WebElement mainPageContainer;
+
     @Autowired
     private TopMenu topMenu;
 
@@ -45,20 +48,25 @@ public class HomePage extends BasePage {
     }
 
     public HomePage acceptCookies() {
+        wait.forElementToBeVisible(consentContainer);
         wait.forElementToBeClickable(consentContainer);
-        var button = consentContainer.findElement(By.linkText("Zaakceptuj wszystkie pliki cookie"));
+        var button = consentContainer.findElement(By.cssSelector("button#onetrust-accept-btn-handler"));
         button.click();
         return this;
     }
 
-    public List<Card> getCards() {
+    public List<HomePageCard> getCards() {
         wait.forAllElementsToBeClickable(cardsContainers);
         return cardsContainers.stream()
-                .map(Card::new)
+                .map(HomePageCard::new)
                 .collect(Collectors.toList());
     }
 
     public TopMenu getTopMenu() {
         return topMenu;
+    }
+
+    public String getCurrentTheme() {
+        return getElementAttribute(mainPageContainer, "class").trim();
     }
 }

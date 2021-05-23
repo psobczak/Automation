@@ -24,4 +24,8 @@ public class Wait {
                 element -> wait.until(ExpectedConditions.elementToBeClickable(element))
         );
     }
+
+    public void forElementToBeVisible(WebElement element) {
+        wait.until(ExpectedConditions.visibilityOf(element));
+    }
 }
